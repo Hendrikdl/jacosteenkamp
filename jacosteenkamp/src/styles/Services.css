@@ -1,0 +1,72 @@
+.services-section {
+  padding: 5rem 1.5rem;
+  min-height: 100vh;
+}
+
+/* SVG BACKGROUND */
+.services-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='800' height='800' viewBox='0 0 800 800' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%232d3748' stroke-width='1'%3E%3Crect x='150' y='200' width='500' height='300' rx='20'/%3E%3Cline x1='400' y1='100' x2='400' y2='200'/%3E%3Crect x='300' y='80' width='200' height='40' rx='10'/%3E%3Cline x1='260' y1='500' x2='540' y2='500'/%3E%3Cline x1='300' y1='500' x2='300' y2='620'/%3E%3Cline x1='500' y1='500' x2='500' y2='620'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 700px;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+/* HEADER */
+.services-title {
+  font-size: 2.6rem;
+  font-weight: 700;
+}
+
+.services-subtitle {
+  max-width: 600px;
+  font-size: 1rem;
+  line-height: 1.7;
+  opacity: 0.85;
+}
+
+/* CARD */
+.service-card {
+  padding: 2rem;
+  border-radius: 18px;
+  background-color: rgba(255, 255, 255, 0.03);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.service-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+
+.service-card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+}
+
+.service-card-text {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+/* BADGES */
+.service-badges {
+  margin-top: 1.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.service-badge {
+  background-color: rgba(13, 110, 253, 0.15);
+  color: #0d6efd;
+  font-weight: 500;
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+}
