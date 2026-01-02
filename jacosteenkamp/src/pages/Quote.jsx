@@ -1,8 +1,15 @@
 // src/pages/Quote.jsx
 import React, { useState } from "react";
+import emailjs from "@emailjs/browser";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "../styles/Contact.css";
 
 export default function Quote() {
+  const service_id = process.env.REACT_APP_EMAILJS_SERVICE_ID;
+  const template_id = process.env.REACT_APP_EMAILJS_QUOTE_TEMPLATE_ID;
+  const public_key = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -17,81 +24,102 @@ export default function Quote() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  const validateForm = () => {
+    if (!form.name.trim()) return "Please enter your full name.";
+    if (!form.email.trim()) return "Please enter your email address.";
+    if (!/\S+@\S+\.\S+/.test(form.email))
+      return "Please enter a valid email address.";
+    if (!form.description.trim())
+      return "Please provide a project description.";
+    return null;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("Your quote request has been sent. We will contact you shortly.");
-    setForm({
-      name: "",
-      email: "",
-      phone: "",
-      material: "PLA",
-      quantity: "",
-      description: "",
-    });
+
+    const error = validateForm();
+    if (error) {
+      toast.error(error);
+      return;
+    }
+
+    emailjs
+      .send(
+        service_id,
+        template_id,
+        {
+          from_name: form.name,
+          from_email: form.email,
+          phone: form.phone,
+          material: form.material,
+          quantity: form.quantity,
+          description: form.description,
+        },
+        public_key
+      )
+      .then(() => {
+        toast.success("Quote request sent successfully!");
+        setForm({
+          name: "",
+          email: "",
+          phone: "",
+          material: "PLA",
+          quantity: "",
+          description: "",
+        });
+      })
+      .catch(() => {
+        toast.error(
+          "Something went wrong while sending your request. Please try again."
+        );
+      });
   };
 
   return (
     <section className="contact-section">
+      <ToastContainer position="top-right" autoClose={4000} />
+
       <div className="contact-container">
-        {/* LEFT – INFO */}
+        {/* LEFT */}
         <div className="contact-info">
           <h1 className="contact-title">Request a Quote</h1>
-
           <p className="contact-description">
             Need a custom 3D printed part or prototype? Provide a few details
             about your project and we’ll prepare a tailored quote for you.
           </p>
-
-          <div className="contact-details">
-            <div className="contact-item">
-              <span className="contact-label">What we offer</span>
-              <span className="contact-value">
-                Design, Prototyping & 3D Printing
-              </span>
-            </div>
-
-            <div className="contact-item">
-              <span className="contact-label">Materials</span>
-              <span className="contact-value">PLA, ABS, PETG, TPU, Nylon</span>
-            </div>
-
-            <div className="contact-item">
-              <span className="contact-label">Turnaround</span>
-              <span className="contact-value">Fast & reliable delivery</span>
-            </div>
-          </div>
         </div>
 
-        {/* RIGHT – QUOTE FORM */}
+        {/* RIGHT */}
         <div className="contact-form-wrapper">
-          <form className="contact-form" onSubmit={handleSubmit}>
+          <form className="contact-form" onSubmit={handleSubmit} noValidate>
             <div className="form-group">
               <label>Full Name</label>
               <input
+                className="formInput"
                 type="text"
                 name="name"
                 value={form.name}
                 onChange={handleChange}
                 placeholder="Your name"
-                required
               />
             </div>
 
             <div className="form-group">
               <label>Email Address</label>
               <input
+                className="formInput"
                 type="email"
                 name="email"
                 value={form.email}
                 onChange={handleChange}
                 placeholder="you@example.com"
-                required
               />
             </div>
 
             <div className="form-group">
               <label>Phone Number</label>
               <input
+                className="formInput"
                 type="tel"
                 name="phone"
                 value={form.phone}
@@ -103,6 +131,7 @@ export default function Quote() {
             <div className="form-group">
               <label>Material</label>
               <select
+                className="formInput"
                 name="material"
                 value={form.material}
                 onChange={handleChange}
@@ -118,6 +147,7 @@ export default function Quote() {
             <div className="form-group">
               <label>Quantity</label>
               <input
+                className="formInput"
                 type="number"
                 name="quantity"
                 min="1"
@@ -130,12 +160,12 @@ export default function Quote() {
             <div className="form-group">
               <label>Project Description</label>
               <textarea
+                className="formInput"
                 name="description"
                 rows="5"
                 value={form.description}
                 onChange={handleChange}
-                placeholder="Describe size, purpose, tolerances, or any special requirements..."
-                required
+                placeholder="Describe your project..."
               />
             </div>
 
