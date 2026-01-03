@@ -6,10 +6,6 @@ import "react-toastify/dist/ReactToastify.css";
 import "../styles/Contact.css";
 
 export default function Quote() {
-  const service_id = process.env.REACT_APP_EMAILJS_SERVICE_ID;
-  const template_id = process.env.REACT_APP_EMAILJS_QUOTE_TEMPLATE_ID;
-  const public_key = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
-
   const [files, setFiles] = useState([]);
 
   const [form, setForm] = useState({
