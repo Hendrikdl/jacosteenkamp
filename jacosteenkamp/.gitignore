@@ -13,6 +13,7 @@
 
 #Ignore .env
 .env
+.env.logal
 
 # misc
 .DS_Store

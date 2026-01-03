@@ -1,6 +1,6 @@
 // src/pages/Quote.jsx
 import React, { useState } from "react";
-import emailjs from "@emailjs/browser";
+
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styles/Contact.css";
@@ -9,6 +9,8 @@ export default function Quote() {
   const service_id = process.env.REACT_APP_EMAILJS_SERVICE_ID;
   const template_id = process.env.REACT_APP_EMAILJS_QUOTE_TEMPLATE_ID;
   const public_key = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
+
+  const [files, setFiles] = useState([]);
 
   const [form, setForm] = useState({
     name: "",
@@ -34,7 +36,7 @@ export default function Quote() {
     return null;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const error = validateForm();
@@ -43,36 +45,36 @@ export default function Quote() {
       return;
     }
 
-    emailjs
-      .send(
-        service_id,
-        template_id,
-        {
-          from_name: form.name,
-          from_email: form.email,
-          phone: form.phone,
-          material: form.material,
-          quantity: form.quantity,
-          description: form.description,
-        },
-        public_key
-      )
-      .then(() => {
-        toast.success("Quote request sent successfully!");
-        setForm({
-          name: "",
-          email: "",
-          phone: "",
-          material: "PLA",
-          quantity: "",
-          description: "",
-        });
-      })
-      .catch(() => {
-        toast.error(
-          "Something went wrong while sending your request. Please try again."
-        );
+    const formData = new FormData();
+    Object.entries(form).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+
+    Array.from(files).forEach((file) => {
+      formData.append("attachments", file);
+    });
+
+    try {
+      const res = await fetch("/api/quote", {
+        method: "POST",
+        body: formData,
       });
+
+      if (!res.ok) throw new Error();
+
+      toast.success("Quote request sent successfully!");
+      setForm({
+        name: "",
+        email: "",
+        phone: "",
+        material: "PLA",
+        quantity: "",
+        description: "",
+      });
+      setFiles([]);
+    } catch {
+      toast.error("Failed to send quote request.");
+    }
   };
 
   return (
@@ -154,6 +156,17 @@ export default function Quote() {
                 value={form.quantity}
                 onChange={handleChange}
                 placeholder="Number of prints"
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Attachments (optional)</label>
+              <input
+                className="formInput"
+                type="file"
+                multiple
+                accept=".pdf,.png,.jpg,.jpeg,.zip,.stl"
+                onChange={(e) => setFiles(e.target.files)}
               />
             </div>
 
